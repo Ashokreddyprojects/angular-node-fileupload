@@ -37,6 +37,7 @@ router.get('/', function(req, res, next) {
 router.post('/upload',upload.any() ,function(req, res) {
   console.log(req.body)
   console.log(req.files)
+  var csvToJson=[];
 //   fs.readFile(req.files[0].path, function read(err, data) {
 //     if (err) {
 //         throw err;
@@ -55,21 +56,26 @@ router.post('/upload',upload.any() ,function(req, res) {
   // });
 
   try {
+   
     csv()
         .fromFile(req.files[0].path)
         .on('json', (jsonObj) => {
             // combine csv header row and csv line to a json object
             // jsonObj.a ==> 1 or 4
-            res.json(jsonObj);
+            console.log(jsonObj);
+           // res.json(jsonObj);
+           csvToJson.push(jsonObj)
         })
         .on('done', (error) => {
             console.log('end')
+            res.json(csvToJson);
         })
 }
 catch (e) {
     console.log(e);
     res.json({ error: "Error" });
 }
+
 });
 
 
